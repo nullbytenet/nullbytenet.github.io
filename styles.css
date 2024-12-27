@@ -4,7 +4,10 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: black;
+    background-image: url('https://i.ibb.co/GJ2WM6C/image.png'); /* Replace with your PNG URL */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
