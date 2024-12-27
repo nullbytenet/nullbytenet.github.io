@@ -1,38 +1,60 @@
-const logo = document.getElementById('dvd-logo');
-const screenWidth = window.innerWidth;
-const screenHeight = window.innerHeight;
-let x = Math.random() * (screenWidth - logo.offsetWidth);
-let y = Math.random() * (screenHeight - logo.offsetHeight);
-let dx = 2;
-let dy = 2;
+const canvas = document.getElementById('map-canvas');
+const ctx = canvas.getContext('2d');
+const clearBtn = document.getElementById('clear-btn');
+const saveBtn = document.getElementById('save-btn');
+const loadBtn = document.getElementById('load-btn');
 
-function moveLogo() {
-    x += dx;
-    y += dy;
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
 
-    // Reverse direction if logo hits the edges
-    if (x + logo.offsetWidth > screenWidth || x < 0) {
-        dx = -dx;
-        logo.style.color = getRandomColor();
-    }
-    if (y + logo.offsetHeight > screenHeight || y < 0) {
-        dy = -dy;
-        logo.style.color = getRandomColor();
-    }
+canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
 
-    logo.style.left = x + 'px';
-    logo.style.top = y + 'px';
+canvas.addEventListener('mousemove', (e) => {
+    if (!isDrawing) return;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
 
-    requestAnimationFrame(moveLogo);
-}
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
 
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
+clearBtn.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
 
-moveLogo();
+saveBtn.addEventListener('click', () => {
+    const dataURL = canvas.toDataURL();
+    const link = document.createElement('a');
+    link.download = 'map.png';
+    link.href = dataURL;
+    link.click();
+});
+
+loadBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+    input.click();
+});
