@@ -20,6 +20,10 @@ body, html {
     z-index: -1;
 }
 
+#background-audio {
+    display: none; /* Hide the audio element */
+}
+
 .content {
     text-align: center;
     z-index: 1;
