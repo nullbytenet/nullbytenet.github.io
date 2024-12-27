@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#dvd-logo {
+    position: absolute;
+    font-size: 50px;
+    font-weight: bold;
+    color: lime;
+    user-select: none;
+}
